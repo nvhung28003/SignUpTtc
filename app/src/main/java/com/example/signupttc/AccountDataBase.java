@@ -33,10 +33,10 @@ public class AccountDataBase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-
+            db.execSQL(SQLQuery);
         }catch (SQLException e)
         {
-            db.execSQL(SQLQuery);
+
         }
 
     }
