@@ -1,12 +1,21 @@
 package com.example.signupttc;
 
 import android.accounts.Account;
+import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class RegiterPresenter implements RegiterContract.Presenter {
+    private Context mContext;
+    public MyAccountInteractor mMyAccountInteractor;
+
+    public RegiterPresenter(Context context) {
+        mContext = context;
+    }
+
 
     private RegiterContract.View mView;
 
@@ -16,24 +25,18 @@ public class RegiterPresenter implements RegiterContract.Presenter {
 
 
     @Override
-    public void HandleSingUp(MyAccount myAccount, List<MyAccount> accountList) {
-        boolean mCheckAccount = false;
-        if(myAccount.getNameAccount().isEmpty() || myAccount.getPassWord().isEmpty()){
+    public void handleSingUp(MyAccount myAccount) {
+        mMyAccountInteractor = new MyAccountInteractor(mContext);
+        if (myAccount.getNameAccount().isEmpty() || myAccount.getPassWord().isEmpty()) {
             mView.singUpEmpty("Password or Name Account is empty");
             return;
         }
-        for (MyAccount myAccountInList : accountList) {
-            if (myAccount.getNameAccount().equals(myAccountInList.getNameAccount()) == true) {
-                mCheckAccount =true;
-            }
-        }
-        if(mCheckAccount ==false)
+        if(mMyAccountInteractor.checkAccount(myAccount.getNameAccount())==false)
         {
-            mView.signUpSuccess(myAccount);
+            mMyAccountInteractor.addAccount(myAccount);
+            mView.signUpSuccess("Sign Up success");
             return;
         }
-
-
         mView.singUpFailure("Account already exists");
     }
 }

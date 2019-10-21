@@ -3,6 +3,7 @@ package com.example.signupttc;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +15,8 @@ public class MainActivity extends AppCompatActivity implements RegiterContract.V
     private EditText mEditTextNameAccount, mEditTextPassWord, mEditTextEmail, mEditTextPhoneNumber;
     private Button mButtonSignUp;
     private RegiterPresenter mRegiterPresenter;
-    private AccountDataBase mAccountDataBase;
-    private List<MyAccount> myAccountList;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +25,6 @@ public class MainActivity extends AppCompatActivity implements RegiterContract.V
         initView();
         regiterListerner();
         initPresenter();
-
-        mAccountDataBase = new AccountDataBase(this);
 
     }
 
@@ -43,26 +42,24 @@ public class MainActivity extends AppCompatActivity implements RegiterContract.V
     }
 
     private void initPresenter() {
-        mRegiterPresenter = new RegiterPresenter();
+        mRegiterPresenter = new RegiterPresenter(this);
         mRegiterPresenter.setView(this);
     }
 
     private void regiterAccount() {
+
         String nameAccount = mEditTextNameAccount.getText().toString();
         String passWord = mEditTextPassWord.getText().toString();
         String phoneNumber = mEditTextPhoneNumber.getText().toString();
         String email = mEditTextEmail.getText().toString();
-
-        MyAccount myAccount = new MyAccount(nameAccount,passWord,phoneNumber,email);
-        myAccountList = mAccountDataBase.getAllAccount();
-
-        mRegiterPresenter.HandleSingUp(myAccount,myAccountList);
+        MyAccount myAccount = new MyAccount(nameAccount, passWord, phoneNumber, email);
+        mRegiterPresenter.handleSingUp(myAccount);
     }
 
     @Override
-    public void signUpSuccess(MyAccount myAccount) {
-        mAccountDataBase.addAccount(myAccount);
-        Toast.makeText(this, "Sign Up success", Toast.LENGTH_LONG).show();
+    public void signUpSuccess(String mess) {
+
+        Toast.makeText(this, mess, Toast.LENGTH_LONG).show();
         mEditTextNameAccount.setText("");
         mEditTextPassWord.setText("");
         mEditTextEmail.setText("");
@@ -76,8 +73,8 @@ public class MainActivity extends AppCompatActivity implements RegiterContract.V
     }
 
     @Override
-    public void singUpEmpty(String Mess) {
-        Toast.makeText(this, Mess, Toast.LENGTH_LONG).show();
+    public void singUpEmpty(String mess) {
+        Toast.makeText(this, mess, Toast.LENGTH_LONG).show();
     }
 
     @Override

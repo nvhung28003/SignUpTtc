@@ -3,6 +3,7 @@ package com.example.signupttc;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -17,7 +18,7 @@ public class AccountDataBase extends SQLiteOpenHelper {
     private static final String PHONENUMBER = "Phone_Number";
     private static final String EMAIL = "Email";
     private static final int VERSION = 1;
-
+    private  SQLiteDatabase db;
     private String SQLQuery = "CREATE TABLE " + TABLE_NAME + " (" +
             NAMEACCOUNT + " TEXT primary key, " +
             PASSWORD + " TEXT, " +
@@ -31,7 +32,13 @@ public class AccountDataBase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQLQuery);
+        try {
+
+        }catch (SQLException e)
+        {
+            db.execSQL(SQLQuery);
+        }
+
     }
 
     @Override
@@ -40,7 +47,13 @@ public class AccountDataBase extends SQLiteOpenHelper {
     }
 
     public void addAccount(MyAccount myAccount) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+             db = this.getWritableDatabase();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         ContentValues values = new ContentValues();
         values.put(NAMEACCOUNT, myAccount.getNameAccount());
         values.put(PASSWORD, myAccount.getPassWord());
@@ -69,5 +82,27 @@ public class AccountDataBase extends SQLiteOpenHelper {
         }
         db.close();
         return accountList;
+    }
+
+    public boolean checkAccount(String nameAccount) {
+
+        try {
+            db = this.getWritableDatabase();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        String sql = "SELECT EXISTS (SELECT * FROM " + TABLE_NAME + " WHERE " + NAMEACCOUNT + "='" + nameAccount + "' LIMIT 1)";
+        Cursor cursor = db
+                .rawQuery(sql, null);
+        cursor.moveToFirst();
+
+        if (cursor.getInt(0) == 1) {
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
     }
 }

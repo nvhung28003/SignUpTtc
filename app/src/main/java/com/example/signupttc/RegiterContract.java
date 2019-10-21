@@ -6,12 +6,12 @@ import java.util.List;
 
 public class RegiterContract {
     interface View{
-        void signUpSuccess(MyAccount myAccount);
+        void signUpSuccess(String mess);
         void singUpFailure(String error);
-        void singUpEmpty(String Mess);
+        void singUpEmpty(String mess);
     }
 
     interface Presenter{
-        void HandleSingUp(MyAccount myAccount, List<MyAccount> accountList);
+        void handleSingUp(MyAccount myAccount);
     }
 }
